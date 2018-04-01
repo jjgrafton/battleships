@@ -97,3 +97,32 @@ function parseGuess (guess) {
     }
     return null;
 };
+
+function init() {
+    let fireButton = document.getElementById("fireButton");
+    fireButton.onclick = handleFireButton;
+    let guessInput = document.getElementById("guessInput");
+    guessInput.onkeypress = handleKeyPress;
+    // creating code to allow use of return key as well as click
+}
+
+function handleKeyPress(e) {
+    let fireButton = document.getElementById("fireButton");
+    if (e.keycode === 13) {
+        fireButton.click();
+        // 13 is return key's keyCode property; fire button acts like it was clicked
+        return false;
+        // this is so the form doesn't do anything like try to submit itself
+    }
+}
+
+function handleFireButton() {
+    let guessInput = document.getElementById("guessInput");
+    let guess = guessInput.value;
+    controller.processGuess(guess);
+
+    guessInput.value = "";
+    // resets form input element so it doesn't have to be manually deleted
+}
+
+window.onload = init;

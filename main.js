@@ -20,11 +20,63 @@ let model = {
     shipLength: 3,
     shipsSunk: 0,
 
-    ships: [{locations: ["06", "16", "26"], hits: ["", "", ""]},
-            {locations: ["24", "34", "44"], hits: ["", "", "",]},
-            {locations: ["10", "11", "12"], hits: ["", "", "",]}],
+    ships: [ { locations: [0, 0, 0], hits: ["", "", ""] },
+            { locations: [0, 0, 0], hits: ["", "", ""] },
+            { locations: [0, 0, 0], hits: ["", "", ""] } ],
+
+    generateShipLocations: function() {
+        let locations;
+        for (var i = 0; i < this.numShips; i++) {
+            do {
+                locations = this.generateShip();
+            } while (this.collison(locations));
+            this.ships[i].locations = locations;
+        }
+    },
+
+    generateShip: function() {
+        let direction = Math.floor(Math.random() * 2);
+        let row;
+        let col;
+        if (direction === 1) {
+            row = Math.floor(Math.random() * this.boardSize);
+            col = Math.floor(Math.random() * (this.boardSize - (this.shipLength + 1)));
+
+        } else {
+            row = Math.floor(Math.random() * this.boardSize - (this.shipLength + 1)));
+            col = Math.floor(Math.random() * (this.boardSize);
+        }
+
+        let newShipLocations = [];
+        for (let i = 0; i < this.shipLength; i++) {
+            if (direction === 1) {
+                newShipLocations.push(row + "" + (col + 1));
+
+            } else {
+                newShipLocations.push((row + i) + "" + col);
+            }
+        }
+        return newShipLocations;
+    }
+
+    collison: function(locations) {
+        for (let i = 0; i < this.numShips; i++) {
+            let ship = this.ships[i];
+            for (let j = 0; j < locations.length; j++) {
+                if (ship.locations.indexOf(locations[j]) >= 0) {
+                    return true;
+                    // if a location already exists, it will return 0 so we know it's there
+                }
+            }
+        }
+        return false;
+    }
+
+    
 
     fire: function(guess) {
+
+        
 //iterate through the array of ships, examining one at a time
         for (let i = 0; i < this.numShips; i++) {
             //Does the guess match any od the ship's locations?
@@ -46,6 +98,8 @@ let model = {
         viw.displayMiss(guess);
         view.displayMessage("You missed doofus…")
         return false;
+
+    
     },
 // New method that takes a ship, and then checks every possible location for a hit
     isSunk: function(ship) {
@@ -104,6 +158,7 @@ function init() {
     let guessInput = document.getElementById("guessInput");
     guessInput.onkeypress = handleKeyPress;
     // creating code to allow use of return key as well as click
+    model.generateShipLocations();
 }
 
 function handleKeyPress(e) {
